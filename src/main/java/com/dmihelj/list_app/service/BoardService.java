@@ -12,28 +12,28 @@ public class BoardService {
 
     private final BoardDao boardDao;
 
-    @Autowired  // Constructor-based dependency injection
+    @Autowired
     public BoardService(BoardDao boardDao) {
         this.boardDao = boardDao;
     }
 
     public List<Board> getAllBoards() {
-        return boardDao.getAllBoards();  // Calls the DAO layer to fetch boards
+        return boardDao.getAllBoards();
     }
 
     public Board getBoardById(Long id) {
-        return boardDao.getBoardById(id);  // Calls the DAO layer to fetch a board by ID
+        return boardDao.getBoardById(id);
     }
 
     public int createBoard(Board board) {
-        return boardDao.createBoard(board);  // Calls the DAO layer to create a new board
+        return boardDao.createBoard(board);
     }
 
     public int updateBoard(Long id, String name) {
-        return boardDao.updateBoard(id, name);  // Calls the DAO layer to update the board
+        return boardDao.updateBoard(id, name);
     }
 
     public int deleteBoard(Long id) {
-        return boardDao.deleteBoard(id);  // Calls the DAO layer to delete a board
+        return boardDao.deleteBoard(id);
     }
 }

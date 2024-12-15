@@ -2,8 +2,9 @@ package com.dmihelj.list_app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;  // Import this for @PreAuthorize
 
 import com.dmihelj.list_app.model.Board;
 import com.dmihelj.list_app.service.BoardService;
@@ -11,61 +12,57 @@ import com.dmihelj.list_app.service.BoardService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/boards")  // Base URL for all board-related endpoints
+@RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardService boardService;
 
-    @Autowired  // Constructor-based dependency injection
+    @Autowired
     public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
 
-    // Allow all users (authenticated or not) to view the boards
     @GetMapping
     public List<Board> getAllBoards() {
-        return boardService.getAllBoards();  // Returns all boards
+        return boardService.getAllBoards();
     }
 
-    // Allow all users (authenticated or not) to view a specific board
     @GetMapping("/{id}")
-    public Board getBoardById(@PathVariable Long id) {
-        return boardService.getBoardById(id);  // Returns a specific board by ID
+    public ResponseEntity<Board> getBoardById(@PathVariable Long id) {
+        Board board = boardService.getBoardById(id);
+        if (board != null) {
+            return ResponseEntity.ok(board);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    // Only authenticated users with 'USER' role can create a board
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping  // Handles POST requests to /api/boards
-    public String createBoard(@RequestBody Board board) {
-        int result = boardService.createBoard(board);  // Creates a new board
+    //@PreAuthorize("isAuthenticated()")
+    @PostMapping
+    public ResponseEntity<String> createBoard(@RequestBody Board board) {
+        int result = boardService.createBoard(board);
         if (result > 0) {
-            return "Board created successfully";
-        } else {
-            return "Board creation failed";
+            return ResponseEntity.status(HttpStatus.CREATED).body("Board created successfully");
         }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Board creation failed");
     }
 
-    // Only authenticated users with 'USER' role can update a board
-    @PreAuthorize("hasRole('USER')")
-    @PutMapping("/{id}")  // Handles PUT requests to /api/boards/{id}
-    public String updateBoard(@PathVariable Long id, @RequestBody Board board) {
-        int result = boardService.updateBoard(id, board.getName());  // Updates the board
+    //@PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateBoard(@PathVariable Long id, @RequestBody Board board) {
+        int result = boardService.updateBoard(id, board.getName());
         if (result > 0) {
-            return "Board updated successfully";
-        } else {
-            return "Board update failed";
+            return ResponseEntity.ok("Board updated successfully");
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found or update failed");
     }
 
-    // Only authenticated users with 'USER' role can delete a board
-    @PreAuthorize("hasRole('USER')")
-    @DeleteMapping("/{id}")  // Handles DELETE requests to /api/boards/{id}
-    public String deleteBoard(@PathVariable Long id) {
-        int result = boardService.deleteBoard(id);  // Deletes the board
+    //@PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBoard(@PathVariable Long id) {
+        int result = boardService.deleteBoard(id);
         if (result > 0) {
-            return "Board deleted successfully";
-        } else {
-            return "Board deletion failed";
+            return ResponseEntity.ok("Board deleted successfully");
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found or deletion failed");
     }
 }

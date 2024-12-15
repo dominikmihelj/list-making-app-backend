@@ -2,15 +2,14 @@ package com.dmihelj.list_app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 import com.dmihelj.list_app.model.ListEntity;
 import com.dmihelj.list_app.service.ListService;
-
 
 @RestController
 @RequestMapping("/api/boards/{boardId}/lists")
@@ -19,8 +18,7 @@ public class ListController {
     @Autowired
     private ListService listService;
 
-    // Create a new list for a board
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<ListEntity> createList(@PathVariable Integer boardId, @RequestBody ListEntity listEntity) {
         listEntity.setBoardId(boardId); // Set the board ID in the list
@@ -28,7 +26,6 @@ public class ListController {
         return ResponseEntity.status(HttpStatus.CREATED).body(listEntity);
     }
 
-    // Get all lists for a board
     @GetMapping
     public List<ListEntity> getListsByBoardId(@PathVariable Integer boardId) {
         return listService.getListsByBoardId(boardId);
@@ -44,8 +41,7 @@ public class ListController {
         return ResponseEntity.notFound().build();
     }
 
-    // Update list name
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<ListEntity> updateList(@PathVariable Integer boardId, @PathVariable Integer id, @RequestBody ListEntity listEntity) {
         listEntity.setBoardId(boardId); // Set the board ID from the path to the list entity
@@ -56,8 +52,7 @@ public class ListController {
         return ResponseEntity.notFound().build();
     }
 
-    // Delete a list
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteList(@PathVariable Integer boardId, @PathVariable Integer id) {
         int deletedRows = listService.deleteList(id);
@@ -67,4 +62,3 @@ public class ListController {
         return ResponseEntity.notFound().build();
     }
 }
-

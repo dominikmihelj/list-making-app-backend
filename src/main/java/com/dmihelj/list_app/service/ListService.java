@@ -13,28 +13,23 @@ public class ListService {
     @Autowired
     private ListDao listDao;
 
-    // Create a new list
     public int createList(ListEntity listEntity) {
         return listDao.createList(listEntity);
     }
 
-    // Get list by ID
     public ListEntity getListById(Integer id) {
         return listDao.getListById(id);
     }
 
-    // Get all lists
     public List<ListEntity> getListsByBoardId(Integer boardId) {
         return listDao.getListsByBoardId(boardId);
     }
 
-    // Update list
     public int updateList(Integer id, ListEntity listEntity) {
-        listEntity.setId(id);  // Set the ID from path into the entity
+        listEntity.setId(id);
         return listDao.updateList(listEntity);
     }
 
-    // Delete list
     public int deleteList(Integer id) {
         return listDao.deleteList(id);
     }
