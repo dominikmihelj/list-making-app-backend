@@ -38,12 +38,9 @@ public class BoardController {
 
     //@PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<String> createBoard(@RequestBody Board board) {
+    public ResponseEntity<Board> createBoard(@RequestBody Board board) {
         int result = boardService.createBoard(board);
-        if (result > 0) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Board created successfully");
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Board creation failed");
+            return ResponseEntity.status(HttpStatus.CREATED).body(board);
     }
 
     //@PreAuthorize("isAuthenticated()")
@@ -58,11 +55,11 @@ public class BoardController {
 
     //@PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBoard(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBoard(@PathVariable Long id) {
         int result = boardService.deleteBoard(id);
         if (result > 0) {
-            return ResponseEntity.ok("Board deleted successfully");
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found or deletion failed");
+        return ResponseEntity.notFound().build();
     }
 }

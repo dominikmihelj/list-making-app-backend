@@ -36,13 +36,13 @@ public class CardDao {
     }
 
     public int createCard(Card card) {
-        String sql = "INSERT INTO cards (title, description, list_id) VALUES (?, ?, ?)";
-        return jdbcTemplate.update(sql, card.getName(), card.getDescription(), card.getListId());
+        String sql = "INSERT INTO cards (name, list_id) VALUES (?, ?)";
+        return jdbcTemplate.update(sql, card.getName(), card.getListId());
     }
 
     public int updateCard(Card card) {
-        String sql = "UPDATE cards SET title = ?, description = ?, list_id = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, card.getName(), card.getDescription(), card.getListId(), card.getId());
+        String sql = "UPDATE cards SET description = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, card.getDescription(), card.getId());
     }
 
     public int deleteCard(Integer id) {
